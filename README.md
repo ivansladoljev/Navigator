@@ -4,7 +4,9 @@ Creates and reads CMB maps.
 
 # Installation
 
-Step 1: download the package using `git clone https://github.com/ivansladoljev/Navigator.git` in the directory you are using. Then create a folder `DATA` in the `Navigator/src/` folder. In there you will have to downoald the chain weights for Capse emulator from `https://zenodo.org/record/8187935/files/chains_weights.zip?download=1` and add them to the `DATA` folder. Everything should be up and running then.
+Step 1: Download the package using `git clone https://github.com/ivansladoljev/Navigator.git` in the directory you are using.
+
+Step2: Then create a folder `DATA` in the `Navigator/src/` folder. In there you will have to downoald the chain weights for Capse emulator from `https://zenodo.org/record/8187935/files/chains_weights.zip?download=1` and add them to the `DATA` folder. Everything should be up and running then.
 
 
 
