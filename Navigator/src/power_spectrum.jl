@@ -21,7 +21,7 @@ using ForwardDiff
 NN_dict = JSON.parsefile("Navigator/src/nn_setup.json")
 
 
-weights_folder = "Navigator/src/DATA/chains_weights/weights/weights_cosmopowerspace_10000/"
+weights_folder = "Navigator/src/DATA/weights/weights_cosmopowerspace_10000/"
 
 weights_TT = npzread(weights_folder*"weights_TT_lcdm.npy")
 ℓ = npzread(weights_folder*"l.npy")
