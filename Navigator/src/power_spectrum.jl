@@ -1,7 +1,7 @@
 module power_spectrum
-export CMBcl,linl, CMBdl, noise_spectrum,derivativeDl
+export get_CMBcl,linl, get_CMBdl, get_noise_spectrum,derivativeDl
 export plot_CMB, vary_amplitude,vary_H0,vary_index,vary_omegab,vary_omegac,vary_tau
-export derivative_of_amplitude,derivative_of_H0,derivative_of_index,derivative_of_omegab,derivative_of_omegac,derivative_of_tau
+export plot_derivative_of_amplitude, plot_derivative_of_H0, plot_derivative_of_index, plot_derivative_of_omegab, plot_derivative_of_omegac,plot_derivative_of_tau
 using Turing
 using Capse
 using Statistics
@@ -34,7 +34,7 @@ OutMinMax = npzread(weights_folder*"outMinMaxCℓTT_lcdm.npy"));
 linl = 2:5000
 
 @doc raw"""
-    CMBdl(;As,ns,H0,wb,wc,tau,lmax)
+    get_CMBdl(;As,ns,H0,wb,wc,tau,lmax)
 
 Calculates the normalised CMB power spectrum (``D_l=C_l * l(l+1)/2\pi``) given the cosmological parameters. 
 # Arguments
@@ -49,14 +49,14 @@ Calculates the normalised CMB power spectrum (``D_l=C_l * l(l+1)/2\pi``) given t
 # Returns
 -`Vector{Float64}`: an array of normalised correlation coefitients [given in ``\mu K^2``] starting from l=2 to lmax.
 """
-function CMBdl(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
+function get_CMBdl(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
     return Capse.get_Cℓ([As,ns,H0,wb,wc,tau], CℓTT_emu)[1:lmax-1]
 end
 
 
 
 @doc raw"""
-    CMBcl(;As,ns,H0,wb,wc,tau,lmax)
+    get_CMBcl(;As,ns,H0,wb,wc,tau,lmax)
 
 Calculates CMB power spectrum (``C_l``) given the cosmological parameters. 
 # Arguments
@@ -71,12 +71,11 @@ Calculates CMB power spectrum (``C_l``) given the cosmological parameters.
 # Returns
 -`Vector{Float64}`: an array of correlation coefitients[given in ``\mu K^2``] starting from l=2 to lmax.
 """
-function CMBcl(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
+function get_CMBcl(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
     newl=linl[1:lmax-1]
-    a= CMBdl(;As,ns,H0,wb,wc,tau,lmax).*(2*pi)./(newl.*(newl.+1))
+    a= get_CMBdl(;As,ns,H0,wb,wc,tau,lmax).*(2*pi)./(newl.*(newl.+1))
     return a 
 end
-
 
 
 
@@ -178,37 +177,37 @@ theory(θ) = Capse.get_Cℓ(θ, CℓTT_emu)
 x=[3.043,0.9645,67.54,0.02217,0.1191,0.0571]
 derivativeDl=ForwardDiff.jacobian(theory, x)
 
-function derivative_of_amplitude()
+function plot_derivative_of_amplitude()
     plot(linl,derivativeDl[:,1],label=L"derivative of $A_s$")
     xlabel!(L"l")
     ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
 end
 
-function derivative_of_index()
+function plot_derivative_of_index()
     plot(linl,derivativeDl[:,2],label=L"derivative of $n_s$")
     xlabel!(L"l")
     ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
 end
 
-function derivative_of_H0()
+function plot_derivative_of_H0()
 plot(linl,derivativeDl[:,3],label=L"derivative of $H_0$")
 xlabel!(L"l")
 ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
 end
 
-function derivative_of_omegab()
+function plot_derivative_of_omegab()
     plot(linl,derivativeDl[:,4],label=L"derivative of  $\omega_b$")
     xlabel!(L"l")
     ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
 end
 
-function derivative_of_omegac()
+function plot_derivative_of_omegac()
 plot(linl,derivativeDl[:,5],label=L"derivative of $ omega_b$")
 xlabel!(L"l")
 ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
 end
 
-function derivative_of_tau()
+function plot_derivative_of_tau()
 plot(linl,derivativeDl[:,6],label=L"derivative of $\tau$")
 xlabel!(L"l")
 ylabel!(L"dD_l / d\theta \, [\mu\mathrm{K}^2]")    
@@ -216,17 +215,17 @@ end
 
 
 @doc raw"""
-    noise_spectrum(;lmax,sigma,Nside)
+    get_noise_spectrum(;lmax,sigma,Nside)
 
 Gives the theoretical normalized noise power spectrum for gaussian noise with mean 0 and variance `sigma^2`.
 #Arguments
 -`lmax::Integer = 5000`:  maximum multipole moment which the function calculates.
 -`sigma::Float64 = 10`: dispersion of Gaussian distribution from which the noise is drawn
--`Nside::Integer, must be a power of 2 = 2048`: the Nside parameter related to a number of pixels of a Healpix map
+-`Nside::Integer, must be a power of 2, default=2048`: the Nside parameter related to a number of pixels of a Healpix map
 #Returns
 -`Vector{Float64}`: an array of the theoretical noise power spectrum [given in ``\mu K^2``] starting from l=2 to lmax.
 """
-function noise_spectrum(;lmax=5000,sigma=10,Nside=2048)
+function get_noise_spectrum(;lmax::Integer=5000,sigma::Float64=10.,Nside::Integer=2048)
     noisearray=zeros(lmax-1)
     for i in 1:lmax-1
         noisearray[i]=sigma^2*(4*pi)/nside2npix(Nside)
@@ -235,6 +234,5 @@ function noise_spectrum(;lmax=5000,sigma=10,Nside=2048)
     noise=noisearray./((2*pi)./(newl.*(newl.+1)))
     return noise
 end
-
 
 end
