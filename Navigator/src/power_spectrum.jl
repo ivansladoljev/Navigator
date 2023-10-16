@@ -1,5 +1,5 @@
 module power_spectrum
-export get_CMBcl,linl, get_CMBdl, get_noise_spectrum,derivativeDl
+export get_CMBcl,linl, get_CMBdl, get_noise_spectrum, derivativeDl
 export plot_CMB, vary_amplitude,vary_H0,vary_index,vary_omegab,vary_omegac,vary_tau
 export plot_derivative_of_amplitude, plot_derivative_of_H0, plot_derivative_of_index, plot_derivative_of_omegab, plot_derivative_of_omegac,plot_derivative_of_tau
 using Turing
@@ -225,7 +225,7 @@ Gives the theoretical normalized noise power spectrum for gaussian noise with me
 #Returns
 -`Vector{Float64}`: an array of the theoretical noise power spectrum [given in ``\mu K^2``] starting from l=2 to lmax.
 """
-function get_noise_spectrum(;lmax::Integer=5000,sigma::Float64=10.,Nside::Integer=2048)
+function get_noise_spectrum(;lmax::Integer=5000,sigma::Float64=10.0,Nside::Integer=2048)
     noisearray=zeros(lmax-1)
     for i in 1:lmax-1
         noisearray[i]=sigma^2*(4*pi)/nside2npix(Nside)

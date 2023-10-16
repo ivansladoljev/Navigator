@@ -14,7 +14,6 @@ using Plots
 using Statistics
 using Distributions
 using .power_spectrum
-rng = MersenneTwister(1234)
 
 
 function Cl(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
@@ -83,12 +82,15 @@ Gives the map of the CMB power spectrum.
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering.
 """
-function make_map(Nside::Integer;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.057,lmax=2*Nside)
+function make_map(Nside::Integer;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.057,lmax=2*Nside,seed=1234)
+    rng = MersenneTwister(seed)
     Map=synfast(Cl(;As,ns,H0,wb,wc,tau,lmax), Nside,rng)
     return Map 
 end
 
-function make_map(cl::Vector{Float64}, Nside::Integer)
+
+function make_map(cl::Vector{Float64}, Nside::Integer;seed::Integer)
+    rng = MersenneTwister(seed)
     Map=synfast(cl, Nside,rng)
     return Map 
 end
@@ -105,7 +107,8 @@ Gives the map of the Gaussian noise with mean zero and dispersion `sigma`.
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering.
 """
-function make_noise(Nside::Integer;sigma=10)
+function make_noise(Nside::Integer;sigma=10.0,seed=1234)
+    rng = MersenneTwister(seed)
     gauss=Normal(0, sigma)
     Noise=rand(rng,gauss,nside2npix(Nside))
     NoiseMp=Healpix.HealpixMap{Float64, Healpix.RingOrder}(Noise)
@@ -149,18 +152,17 @@ Gives the map of the CMB power spectrum with noise added.
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering with npise added.
 """
-function make_noisymap(Nside::Integer;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.057,sigma=10,lmax=2*Nside)
-    Mp=make_map(Nside;As,ns,H0,wb,wc,tau,lmax).+make_noise(Nside;sigma)
+function make_noisymap(Nside::Integer;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.057,sigma=10.0,lmax=2*Nside,seed=1234)
+    Mp=make_map(Nside;As,ns,H0,wb,wc,tau,lmax,seed).+make_noise(Nside;sigma,seed)
     Mapa=Healpix.HealpixMap{Float64, Healpix.RingOrder}(Mp)
     return Mapa
 end
 
 
-function make_noisymap(cl::Vector{Float64},Nside::Integer;sigma=10)
-    Mp=make_map(cl,Nside).+make_noise(Nside;sigma)
+function make_noisymap(cl::Vector{Float64},Nside::Integer;sigma=10.0,seed=1234)
+    Mp=make_map(cl,Nside;seed).+make_noise(Nside;sigma,seed)
     Mapa=Healpix.HealpixMap{Float64, Healpix.RingOrder}(Mp)
     return Mapa
 end
-
 
 end
