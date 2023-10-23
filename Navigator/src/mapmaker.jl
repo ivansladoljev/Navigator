@@ -51,7 +51,7 @@ end
 
 
 @doc raw"""
-    make_map(Nside;As,ns,H0,wb,wc,tau,lmax) 
+    make_map(Nside;As,ns,H0,wb,wc,tau,lmax,seed) 
 
 Gives the map of the CMB power spectrum.
 # Arguments
@@ -70,6 +70,8 @@ Gives the map of the CMB power spectrum.
 - `tau::Float64 = 0.0571`: optical depth parameter in the reionisation era.
 
 - `lmax::Integer = 2*Nside`: maximum multipole moment of the power spectrum for which the map is calculated.
+
+- `seed::Integer = 1234`: fixes the seed for the MersenneTwister random generator
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering.
 
@@ -79,6 +81,8 @@ Gives the map of the CMB power spectrum.
 - `cl::Vector{Float64}`: a set of power spectrum ``C_l``s for which to calculate a map.
 
 - `Nside::Integer, must be a power of 2 `: the Nside parameter for the number of pixels in the map.
+
+- `seed::Integer = 1234`: fixes the seed for the MersenneTwister random generator
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering.
 """
@@ -104,6 +108,8 @@ Gives the map of the Gaussian noise with mean zero and dispersion `sigma`.
 - `Nside::Integer, must be a power of 2 `: the Nside parameter for the number of pixels in the map.
 
 - `sigma::Float64 = 10`: dispersion of Gaussian distribution from which the noise is drawn.
+
+- `seed::Integer = 1234`: fixes the seed for the MersenneTwister random generator
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering.
 """
@@ -138,6 +144,8 @@ Gives the map of the CMB power spectrum with noise added.
 - `lmax::Integer = 5000`: maximum multipole moment of the power spectrum for which the map is calculated.
 
 - `sigma::Float64 = 10`: dispersion of Gaussian distribution from which the noise is drawn.
+
+- `seed::Integer = 1234`: fixes the seed for the MersenneTwister random generator
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering with npise added.
 
@@ -149,6 +157,9 @@ Gives the map of the CMB power spectrum with noise added.
 - `Nside::Integer, must be a power of 2 `: the Nside parameter for the number of pixels in the map.
 
 - `sigma::Float64 = 10`: dispersion of Gaussian distribution from which the noise is drawn.
+
+
+- `seed::Integer = 1234`: fixes the seed for the MersenneTwister random generator
 # Returns
 -`Healpix.HealpixMap{Float64, Healpix.RingOrder}`: returns the Healpix map of the CMB in RingOrdering with npise added.
 """
