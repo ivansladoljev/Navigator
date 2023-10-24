@@ -65,7 +65,7 @@ end
 
 
 
-cl=get_CMBcl(lmax=4)
+cl=get_CMBcl(lmax=8)
 ncl=pushfirst!(cl,0)
 nncl=pushfirst!(ncl,0)
 
@@ -135,3 +135,60 @@ end
 alm_to_Heal(r)
 
 #@model function sample_cl()
+
+
+
+
+@model  function alm_syn(cl::Vector{Float64}) 
+    cl_size = length(cl)
+    lmax = cl_size-1
+    mmax = cl_size-1
+    alm = Healpix.Alm{ComplexF64, Vector{ComplexF64}}(lmax, mmax)
+    for l = 0:lmax
+        if l <= mmax
+                maxm = l
+        else
+                maxm = mmax
+        end
+        for m = 0:maxm
+            i = Healpix.almIndex(alm, l, m)
+            if m==0
+                alm.alm[i]~Normal(0, sqrt(cl[l+1]))
+            else
+                alm.alm[i].re ~Normal(0, sqrt(cl[l+1]/2))
+                alm.alm[i].im ~Normal(0, sqrt(cl[l+1]/2))
+            end
+        end
+    end
+    alm
+end
+
+c=alm_syn( nncl)
+rng = MersenneTwister(1234)
+g=rand(rng,c)
+
+for i in 1:45
+    print(g[:var"alm.alm[ $i ].im"])
+end
+
+
+
+function alm_to_Heal(g)
+    lmax=8
+    mmax=8
+    Alm = Healpix.Alm{ComplexF64, Vector{ComplexF64}}(lmax, mmax)
+    for l = 0:lmax
+        if l <= mmax
+            maxm = l
+        else
+            maxm = mmax
+        end
+        for m = 0:maxm
+            i = Healpix.almIndex(Alm, l, m)
+            Alm[i]=g[i]
+        end
+    end
+    return Alm
+end
+
+alm_to_Heal(g)
