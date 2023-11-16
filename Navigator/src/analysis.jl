@@ -59,7 +59,7 @@ Gives the infered power spectrum coeficients ``C_l`` (with noise removed) from t
 """
 function get_clestimate(map;lmax=2*npix2nside(size(map)[1]),sigma=10.0)
     newl=power_spectrum.linl[1:lmax-1]
-    clest=get_clobserved(map).-(power_spectrum.get_noise_spectrum(;lmax,sigma,Nside=npix2nside(size(map)[1])).*(2*pi)./(newl.*(newl.+1)))
+    clest=get_clobserved(map;lmax).-(power_spectrum.get_noise_spectrum(;lmax,sigma,Nside=npix2nside(size(map)[1])).*(2*pi)./(newl.*(newl.+1)))
     return clest
 end
 
