@@ -81,10 +81,11 @@ end
 
 function plot_CMB(;As=3.043,ns=0.9645,H0=67.54,wb=0.02217,wc=0.1191,tau=0.0571,lmax=5000)
     linl = 2:lmax
-    plot(linl, CMBdl(;As,ns,H0,wb,wc,tau,lmax), label="CMB power spectrum")
+    plot(linl, get_CMBdl(;As,ns,H0,wb,wc,tau,lmax), label="CMB power spectrum")
     xlabel!(L"l")
     ylabel!(L"$D_l$ [$\mu\mathrm{K}^2$]")
 end
+
 
 function vary_amplitude()
     p1=plot()
@@ -234,5 +235,6 @@ function get_noise_spectrum(;lmax::Integer=5000,sigma::Float64=10.0,Nside::Integ
     noise=noisearray./((2*pi)./(newl.*(newl.+1)))
     return noise
 end
+
 
 end
