@@ -73,6 +73,23 @@ Returns
 ## Making maps
 From the generated set of $`C_l`$s or $`D_l`$s you can make your own custom map of the CMB, with differing levels of pixelization, using the **make_map()** function. You can also make the noise map with **make_noise()**, or add the gaussian noise to you existing CMB map with **make_noisymap()** function.
 
+### get_Cl(;As,ns,H0,wb,wc,tau,lmax)
+
+Calculates CMB power spectrum ($`C_l`$) given the cosmological parameters from l=0 to lmax. 
+ 
+ Arguments
+- `As::Float64 = 3.043`: amplitude of primordial perturbations.
+- `ns::Float64 = 0.964`: spectral index of the power spectrum.
+- `H0::Float64 = 67.54`: Hubble expansion rate at current time.
+- `wb::Float64 = 0.02217`: the ratio of baryonic matter ($`\\Omega_b`$).
+- `wc::Float64 = 0.1191`: the ratio of dark matter ($`\\Omega_c`$).
+- `tau::Float64 = 0.0571`: optical depth parameter in the reionisation era.
+- `lmax::Integer = 5000`: maximum multipole moment which the function calculates.
+
+ Returns
+-`Vector{Float64}`: an array of correlation coefitients[given in $`\mu K^2`$] starting from l=0 to lmax.
+"""
+
 ###  make_map(Nside;As,ns,H0,wb,wc,tau,lmax,seed) 
 
 Gives the map of the CMB power spectrum.
