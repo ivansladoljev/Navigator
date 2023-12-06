@@ -86,7 +86,4 @@ function get_dlestimate(map; lmax=2*npix2nside(size(map)[1]), sigma=10.0)
 end
 
 
-
-
-
 end
