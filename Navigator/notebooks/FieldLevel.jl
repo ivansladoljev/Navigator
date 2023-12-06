@@ -36,7 +36,7 @@ random_noise = ones(length(test_map.pixels))*sqrt(10.0)  ## noise variance
 
     cl=c(10*ln10As, ns,lmax)
 
-    for l = 0:lmax-1
+    for l = 0:lmax
         if l <= mmax
             maxm = l
         else
