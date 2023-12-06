@@ -36,7 +36,7 @@ random_noise = ones(length(test_map.pixels))*sqrt(10.0)  ## noise variance
 
     cl=c(10*ln10As, ns,lmax)
 
-    for l = 0:lmax-1
+    for l = 0:lmax
         if l <= mmax
             maxm = l
         else
@@ -49,16 +49,11 @@ random_noise = ones(length(test_map.pixels))*sqrt(10.0)  ## noise variance
             else
                 if m==0
                     alm.alm[i] ~ Normal(0, sqrt(cl[l+1]))
-                    #alm.alm[i] ~ Normal(0, test[l])
-                    #alm.alm[i] = aa[i]
+                
                 else
                     alm.alm[i].re ~ Normal(0, sqrt(cl[l+1]/2))  
                     alm.alm[i].im ~ Normal(0, sqrt(cl[l+1]/2))
-                  # alm.alm[i].re ~ Normal(0, test[l]/2)
-                   #alm.alm[i].im ~ Normal(0, test[l]/2)
-                    #real~ Normal(0, sqrt(cl[l+1]/2))
-                   # comp ~ Normal(0, sqrt(cl[l+1]/2))
-                   # alm.alm[i]=complex(real,comp)
+            
                 end
             end
         end
@@ -75,6 +70,7 @@ end
 
 ###sampling
 cmb=CMB_model(test_map.pixels, random_noise)
+sample(cmb,MH(),1000)
 gibs=Gibbs(HMC(0.05,10,:ln10As, :ns,:cl), MH(:alm,:m))
 chn = sample(cmb, gibs,5000;save_state=true)
 
@@ -112,4 +108,11 @@ for i in 0:16
     s+=17-i
 end
 covMH=Diagonal(cova)
+
+
+
+
+
+
+
 
